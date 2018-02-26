@@ -3,10 +3,7 @@ import speedtest
 import pandas as pd
 
 
-def do_speed_test():
-    s = speedtest.Speedtest()
-    print("Looking for best server...")
-    s.get_best_server()
+def do_speed_test(s):
     print("Testing download...")
     s.download()
     print("Testing upload...")
@@ -41,9 +38,13 @@ def main():
     else:
         df = pd.DataFrame()
 
+    s = speedtest.Speedtest()
+    print("Looking for best server...")
+    s.get_best_server()
+
     for i in range(3):
         print("Starting test #" + str(i + 1))
-        result = do_speed_test()
+        result = do_speed_test(s)
         result = flatten(result)
         result_df = pd.DataFrame.from_records([result])
         df = df.append(result_df)
