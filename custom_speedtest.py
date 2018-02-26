@@ -1,3 +1,4 @@
+import os
 import speedtest
 import pandas as pd
 
@@ -35,7 +36,10 @@ def save_data_frame(df, filename):
 
 def main():
     filename = "speeds.csv"
-    df = pd.read_csv(filename, index_col='index')
+    if os.path.isfile(filename):
+        df = pd.read_csv(filename, index_col='index')
+    else:
+        df = pd.DataFrame()
 
     for i in range(3):
         print("Starting test #" + str(i + 1))
