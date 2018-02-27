@@ -1,4 +1,6 @@
 __pycache__/
+.vscode/
 images/
 speeds.csv
 speed.log
+gather_data.sh
