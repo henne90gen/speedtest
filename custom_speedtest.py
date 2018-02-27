@@ -1,6 +1,7 @@
 import os
 import speedtest
 import urllib.request
+from datetime import datetime
 
 
 def do_speed_test(s: speedtest.Speedtest):
@@ -58,6 +59,8 @@ def main():
     filename = "speeds.csv"
     image_dir = "images"
 
+    print("Starting speedtest at", datetime.now())
+
     s = speedtest.Speedtest()
     print("Looking for best server...")
     s.get_best_server()
@@ -66,11 +69,11 @@ def main():
         print("Starting test #" + str(i + 1))
         result = do_speed_test(s)
         result = flatten(result)
-        
+
         result['run'] = i
         save_dict(result, filename)
-        
-        # Reusing the Speedtest object causes the image url to be the same for each of the three runs 
+
+        # Reusing the Speedtest object causes the image url to be the same for each of the three runs
         download_image(result['share'], i, image_dir)
 
 
