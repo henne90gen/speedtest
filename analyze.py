@@ -51,7 +51,7 @@ def main():
     plot.line(x='index', y='ping', source=source, legend='Ping', line_color='green')
 
     output_file('index.html')
-    show(plot)
+    save(plot)
 
 
 if __name__ == '__main__':
