@@ -15,7 +15,11 @@ def convert_time(time_string):
 
 def main():
     df = pd.read_csv("speeds.csv")
-    columns = ['server_host', 'share', 'server_url', 'server_url2', 'server_sponsor',
+    
+    with pd.option_context('display.max_rows', None, 'display.max_columns', 3):
+        print(df)
+    
+    columns = ['server_host', 'share', 'server_url', 'server_sponsor',
                'server_name', 'server_lat', 'server_lon', 'server_d', 'server_latency',
                'server_country', 'server_cc', 'server_id', 'client_lat', 'client_loggedin',
                'client_lon', 'client_ispdlavg', 'client_isprating', 'client_ispulavg', 'client_isp',

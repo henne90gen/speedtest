@@ -23,10 +23,14 @@ def flatten(result: str):
     return result
 
 
+def sort_and_filter_result_keys(result):
+    return filter(lambda x: not x.contains('server_url2'), sorted(result.keys()))
+
+
 def save_dict(result: dict, filename: str):
     if not os.path.isfile(filename):
         header = ""
-        for key in sorted(result.keys()):
+        for key in sort_and_filter_result_keys(result):
             if len(header) == 0:
                 header = key
             else:
@@ -37,7 +41,7 @@ def save_dict(result: dict, filename: str):
 
     print("Saving to csv...")
     line = ""
-    for key in sorted(result.keys()):
+    for key in sort_and_filter_result_keys(result):
         if len(line) == 0:
             line = str(result[key])
         else:
