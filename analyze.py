@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from bokeh.plotting import figure, save, output_file
 from bokeh.models import ColumnDataSource, DatetimeTickFormatter
@@ -14,7 +14,7 @@ def convert_time(time_string):
         time = time.replace(minute=0)
     elif time.minute <= 59:
         time = time.replace(minute=30)
-    return time
+    return time + timedelta(hours=1)
 
 
 def main():
@@ -29,7 +29,6 @@ def main():
                'client_country', 'client_ip', 'client_rating', 'run']
     df = df.drop(columns, axis=1)
     df = df.drop(['bytes_sent', 'bytes_received'], axis=1)
-    print(df)
 
     df.ping /= 100
     df.download /= 1024 * 1024
