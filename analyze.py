@@ -2,6 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 
+from bokeh.plotting import figure, show, output_file
+from bokeh.models import ColumnDataSource
+
 
 def convert_time(time_string):
     pattern = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -15,10 +18,9 @@ def convert_time(time_string):
 
 def main():
     df = pd.read_csv("speeds.csv")
-    
-    with pd.option_context('display.max_rows', None, 'display.max_columns', 3):
-        print(df)
-    
+
+    print(df)
+
     columns = ['server_host', 'share', 'server_url', 'server_sponsor',
                'server_name', 'server_lat', 'server_lon', 'server_d', 'server_latency',
                'server_country', 'server_cc', 'server_id', 'client_lat', 'client_loggedin',
@@ -31,17 +33,25 @@ def main():
     # Convert timestamp to datetime and make it the index
     df.timestamp = df.timestamp.map(convert_time)
     df = df.set_index(['timestamp'])
-    
+
     # Take average of runs
-    df = df.groupby([df.index.year, df.index.month, df.index.day, df.index.hour, df.index.minute]).mean()
+    df = df.groupby([df.index.year, df.index.month, df.index.day,
+                     df.index.hour, df.index.minute]).mean()
     df.index = df.index.map(lambda x: datetime(*x))
 
     # Upsample and interpolate data
-    df = df.resample('30T').asfreq().interpolate()
-
+    df = df.resample('15T').asfreq().interpolate(method='spline', order=3)
     print(df)
-    df.plot.line()
-    plt.show()
+
+    source = ColumnDataSource(df)
+
+    plot = figure(sizing_mode='stretch_both')
+    plot.line(x='index', y='download', source=source, legend='Download', line_color='red')
+    plot.line(x='index', y='upload', source=source, legend='Upload', line_color='blue')
+    plot.line(x='index', y='ping', source=source, legend='Ping', line_color='green')
+
+    output_file('index.html')
+    show(plot)
 
 
 if __name__ == '__main__':
