@@ -4,6 +4,8 @@ from datetime import datetime
 from bokeh.plotting import figure, show, output_file
 from bokeh.models import ColumnDataSource
 
+print('Done with imports')
+
 
 def convert_time(time_string):
     pattern = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -16,9 +18,9 @@ def convert_time(time_string):
 
 
 def main():
-    df = pd.read_csv("speeds.csv")
+    print('Analysing data')
 
-    print(df)
+    df = pd.read_csv("speeds.csv")
 
     columns = ['server_host', 'share', 'server_url', 'server_sponsor',
                'server_name', 'server_lat', 'server_lon', 'server_d', 'server_latency',
@@ -39,15 +41,19 @@ def main():
     df.index = df.index.map(lambda x: datetime(*x))
 
     # Upsample and interpolate data
-    df = df.resample('15T').asfreq().interpolate(method='spline', order=3)
-    print(df)
+    df = df.resample('15T').asfreq().interpolate()
+
+    print('Generating result')
 
     source = ColumnDataSource(df)
 
     plot = figure(sizing_mode='stretch_both')
-    plot.line(x='index', y='download', source=source, legend='Download', line_color='red')
-    plot.line(x='index', y='upload', source=source, legend='Upload', line_color='blue')
-    plot.line(x='index', y='ping', source=source, legend='Ping', line_color='green')
+    plot.line(x='index', y='download', source=source,
+              legend='Download', line_color='red')
+    plot.line(x='index', y='upload', source=source,
+              legend='Upload', line_color='blue')
+    plot.line(x='index', y='ping', source=source,
+              legend='Ping', line_color='green')
 
     output_file('index.html')
     save(plot)
