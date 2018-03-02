@@ -24,7 +24,7 @@ def flatten(result: str):
 
 
 def sort_and_filter_result_keys(result):
-    return filter(lambda x: not x.contains('server_url2'), sorted(result.keys()))
+    return filter(lambda x: 'server_url2' not in x, sorted(result.keys()))
 
 
 def save_dict(result: dict, filename: str):

@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime
 
 from bokeh.plotting import figure, save, output_file
-from bokeh.models import ColumnDataSource
+from bokeh.models import ColumnDataSource, DatetimeTickFormatter
 
 print('Done with imports')
 
@@ -29,7 +29,11 @@ def main():
                'client_country', 'client_ip', 'client_rating', 'run']
     df = df.drop(columns, axis=1)
     df = df.drop(['bytes_sent', 'bytes_received'], axis=1)
-    df.ping *= 100000
+    print(df)
+
+    df.ping /= 100
+    df.download /= 1024 * 1024
+    df.upload /= 1024 * 1024
 
     # Convert timestamp to datetime and make it the index
     df.timestamp = df.timestamp.map(convert_time)
@@ -47,13 +51,23 @@ def main():
 
     source = ColumnDataSource(df)
 
-    plot = figure(sizing_mode='stretch_both')
+    plot = figure(sizing_mode='stretch_both', x_axis_type='datetime')
+
     plot.line(x='index', y='download', source=source,
               legend='Download', line_color='red')
     plot.line(x='index', y='upload', source=source,
               legend='Upload', line_color='blue')
     plot.line(x='index', y='ping', source=source,
               legend='Ping', line_color='green')
+
+    plot.xaxis.formatter=DatetimeTickFormatter(
+        hours=["%H:%M"],
+        days=["%d %B %Y"],
+        months=["%B"],
+        years=["%Y"],
+    )
+    plot.xaxis[0].ticker.desired_num_ticks = 15
+    plot.yaxis.axis_label = "Mbit/s"
 
     output_file('index.html')
     save(plot)
