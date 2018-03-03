@@ -17,6 +17,28 @@ def convert_time(time_string):
     return time + timedelta(hours=1)
 
 
+def create_hover_tool(name, display_data):
+    return HoverTool(
+        mode='vline',
+        names=[name],
+        tooltips=[
+            ('Time', "@tooltip_datetime"),
+            (name, display_data)
+        ],
+    )
+
+
+def create_line(source, plot, name, color):
+    plot.line(
+        x='index',
+        y=name.lower(),
+        source=source,
+        legend=name,
+        line_color=color,
+        name=name
+    )
+
+
 def main():
     print('Analysing data')
 
@@ -46,20 +68,20 @@ def main():
     # Upsample and interpolate data
     df = df.resample('15T').asfreq().interpolate()
 
+    df['tooltip_datetime'] = df.index.map(
+        lambda x: x.strftime("%H:%M - %d.%m.%Y"))
+
     print('Generating result')
 
     source = ColumnDataSource(df)
 
     plot = figure(sizing_mode='stretch_both', x_axis_type='datetime')
 
-    plot.line(x='index', y='download', source=source,
-              legend='Download', line_color='red')
-    plot.line(x='index', y='upload', source=source,
-              legend='Upload', line_color='blue')
-    plot.line(x='index', y='ping', source=source,
-              legend='Ping', line_color='green')
+    create_line(source, plot, 'Download', 'red')
+    create_line(source, plot, 'Upload', 'blue')
+    create_line(source, plot, 'Ping', 'green')
 
-    plot.xaxis.formatter=DatetimeTickFormatter(
+    plot.xaxis.formatter = DatetimeTickFormatter(
         hours=["%H:%M"],
         days=["%d %B %Y"],
         months=["%B"],
@@ -68,13 +90,9 @@ def main():
     plot.xaxis[0].ticker.desired_num_ticks = 15
     plot.yaxis.axis_label = "Mbit/s"
 
-    hover = HoverTool()
-    hover.tooltips = [
-        ("Download", "@download Mbit/s"),
-        ("Upload", "@upload Mbit/s"),
-        ("Ping", "@ping * 10^-2 s"),
-    ]
-    plot.add_tools(hover)
+    plot.add_tools(create_hover_tool("Download", "@download Mbit/s"))
+    plot.add_tools(create_hover_tool("Upload", "@upload Mbit/s"))
+    plot.add_tools(create_hover_tool("Ping", "@ping * 10^-2 s"))
 
     output_file('index.html')
     save(plot)
