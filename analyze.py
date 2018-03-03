@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 from bokeh.plotting import figure, save, output_file
-from bokeh.models import ColumnDataSource, DatetimeTickFormatter
+from bokeh.models import ColumnDataSource, DatetimeTickFormatter, HoverTool
 
 print('Done with imports')
 
@@ -67,6 +67,14 @@ def main():
     )
     plot.xaxis[0].ticker.desired_num_ticks = 15
     plot.yaxis.axis_label = "Mbit/s"
+
+    hover = HoverTool()
+    hover.tooltips = [
+        ("Download", "@download Mbit/s"),
+        ("Upload", "@upload Mbit/s"),
+        ("Ping", "@ping * 10^-2 s"),
+    ]
+    plot.add_tools(hover)
 
     output_file('index.html')
     save(plot)
