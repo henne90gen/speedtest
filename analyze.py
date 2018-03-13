@@ -89,6 +89,7 @@ def main():
     )
     plot.xaxis[0].ticker.desired_num_ticks = 15
     plot.yaxis.axis_label = "Mbit/s"
+    plot.legend.click_policy = "hide"
 
     plot.add_tools(create_hover_tool("Download", "@download Mbit/s"))
     plot.add_tools(create_hover_tool("Upload", "@upload Mbit/s"))
