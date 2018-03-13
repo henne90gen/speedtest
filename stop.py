@@ -7,3 +7,5 @@ content = content.replace("#placeholder", "exit 0")
 
 with open('run.sh', 'w') as f:
     f.write(content)
+
+print("Speedtesting stopped")
