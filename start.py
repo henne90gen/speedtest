@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 
 with open('run.sh', 'r') as f:
     content = f.read()
