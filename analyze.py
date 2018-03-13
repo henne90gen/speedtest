@@ -90,7 +90,7 @@ def main():
     plot.yaxis.axis_label = "Mbit/s"
     plot.legend.click_policy = "hide"
 
-    alpha = 0.35
+    alpha = 0.15
     plot.add_layout(BoxAnnotation(top=2, fill_alpha=alpha, fill_color='red'))
     plot.add_layout(BoxAnnotation(bottom=2, top=3.8, fill_alpha=alpha, fill_color='yellow'))
     plot.add_layout(BoxAnnotation(bottom=3.8, fill_alpha=alpha, fill_color='green'))
