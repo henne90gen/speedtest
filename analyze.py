@@ -91,9 +91,11 @@ def main():
     plot.legend.click_policy = "hide"
 
     alpha = 0.15
-    plot.add_layout(BoxAnnotation(top=2, fill_alpha=alpha, fill_color='red'))
-    plot.add_layout(BoxAnnotation(bottom=2, top=3.8, fill_alpha=alpha, fill_color='yellow'))
-    plot.add_layout(BoxAnnotation(bottom=3.8, fill_alpha=alpha, fill_color='green'))
+    minimum = 2
+    target = 3.8
+    plot.add_layout(BoxAnnotation(top=minimum, fill_alpha=alpha, fill_color='red'))
+    plot.add_layout(BoxAnnotation(bottom=minimum, top=target, fill_alpha=alpha, fill_color='yellow'))
+    plot.add_layout(BoxAnnotation(bottom=target, fill_alpha=alpha, fill_color='green'))
 
     plot.add_tools(create_hover_tool("Download", "@download Mbit/s"))
     plot.add_tools(create_hover_tool("Upload", "@upload Mbit/s"))
