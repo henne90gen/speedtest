@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 from bokeh.plotting import figure, save, output_file
-from bokeh.models import ColumnDataSource, DatetimeTickFormatter, HoverTool
+from bokeh.models import ColumnDataSource, DatetimeTickFormatter, HoverTool, BoxAnnotation
 
 print('Done with imports')
 
@@ -70,15 +70,12 @@ def main():
     df['tooltip_datetime'] = df.index.map(
         lambda x: x.strftime("%H:%M - %d.%m.%Y"))
 
-    df['soll'] = 6
-
     print('Generating result')
 
     source = ColumnDataSource(df)
 
     plot = figure(sizing_mode='stretch_both', x_axis_type='datetime')
 
-    create_line(source, plot, 'Soll', 'red')
     create_line(source, plot, 'Download', 'red')
     create_line(source, plot, 'Upload', 'blue')
     create_line(source, plot, 'Ping', 'green')
@@ -92,6 +89,11 @@ def main():
     plot.xaxis[0].ticker.desired_num_ticks = 15
     plot.yaxis.axis_label = "Mbit/s"
     plot.legend.click_policy = "hide"
+
+    alpha = 0.35
+    plot.add_layout(BoxAnnotation(top=2, fill_alpha=alpha, fill_color='red'))
+    plot.add_layout(BoxAnnotation(bottom=2, top=3.8, fill_alpha=alpha, fill_color='yellow'))
+    plot.add_layout(BoxAnnotation(bottom=3.8, fill_alpha=alpha, fill_color='green'))
 
     plot.add_tools(create_hover_tool("Download", "@download Mbit/s"))
     plot.add_tools(create_hover_tool("Upload", "@upload Mbit/s"))
