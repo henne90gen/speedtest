@@ -48,9 +48,8 @@ def main():
                'server_name', 'server_lat', 'server_lon', 'server_d', 'server_latency',
                'server_country', 'server_cc', 'server_id', 'client_lat', 'client_loggedin',
                'client_lon', 'client_ispdlavg', 'client_isprating', 'client_ispulavg', 'client_isp',
-               'client_country', 'client_ip', 'client_rating', 'run']
+               'client_country', 'client_ip', 'client_rating', 'run', 'bytes_sent', 'bytes_received']
     df = df.drop(columns, axis=1)
-    df = df.drop(['bytes_sent', 'bytes_received'], axis=1)
 
     df.ping /= 100
     df.download /= 1024 * 1024
@@ -71,12 +70,15 @@ def main():
     df['tooltip_datetime'] = df.index.map(
         lambda x: x.strftime("%H:%M - %d.%m.%Y"))
 
+    df['soll'] = 6
+
     print('Generating result')
 
     source = ColumnDataSource(df)
 
     plot = figure(sizing_mode='stretch_both', x_axis_type='datetime')
 
+    create_line(source, plot, 'Soll', 'red')
     create_line(source, plot, 'Download', 'red')
     create_line(source, plot, 'Upload', 'blue')
     create_line(source, plot, 'Ping', 'green')
