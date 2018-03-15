@@ -61,11 +61,15 @@ def main():
 
     # Take average of runs
     df = df.groupby([df.index.year, df.index.month, df.index.day,
-                     df.index.hour, df.index.minute]).mean()
+                     df.index.hour, df.index.minute, df.index.second]).mean()
     df.index = df.index.map(lambda x: datetime(*x))
 
+    print(df)
+
     # Upsample and interpolate data
-    df = df.resample('15T').asfreq().interpolate()
+    regular_intervall = df.resample('15T').asfreq()
+    df = pd.concat([df, regular_intervall]).sort_index().interpolate()
+    print(df)
 
     df['tooltip_datetime'] = df.index.map(
         lambda x: x.strftime("%H:%M - %d.%m.%Y"))

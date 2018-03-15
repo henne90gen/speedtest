@@ -1,8 +1,8 @@
 import os
+import pickle
 import speedtest
 import urllib.request
 from datetime import datetime
-
 
 def do_speed_test(s: speedtest.Speedtest):
     print("Testing download...")
@@ -27,7 +27,7 @@ def sort_and_filter_result_keys(result):
     return filter(lambda x: 'server_url2' not in x, sorted(result.keys()))
 
 
-def save_dict(result: dict, filename: str):
+def save_to_csv(result: dict, filename: str):
     if not os.path.isfile(filename):
         header = ""
         for key in sort_and_filter_result_keys(result):
@@ -69,17 +69,23 @@ def main():
     print("Looking for best server...")
     s.get_best_server()
 
+    results = []
     for i in range(3):
         print("Starting test #" + str(i + 1))
         result = do_speed_test(s)
         result = flatten(result)
 
         result['run'] = i
-        save_dict(result, filename)
+        results.append(result)
 
         # Reusing the Speedtest object causes the image url to be the same for each of the three runs
         download_image(result['share'], i, image_dir)
 
+    result['download'] = sum(map(lambda r: r['download'], results)) / len(results)
+    result['upload'] = sum(map(lambda r: r['upload'], results)) / len(results)
+    result['ping'] = sum(map(lambda r: r['ping'], results)) / len(results)
+
+    save_to_csv(result, filename)
 
 if __name__ == '__main__':
     main()
