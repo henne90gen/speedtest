@@ -10,11 +10,6 @@ print('Done with imports')
 def convert_time(time_string):
     pattern = "%Y-%m-%dT%H:%M:%S.%fZ"
     return datetime.strptime(time_string, pattern) + timedelta(hours=1)
-    # if time.minute < 30:
-    #     time = time.replace(minute=0)
-    # elif time.minute <= 59:
-    #     time = time.replace(minute=30)
-    # return time + 
 
 
 def create_hover_tool(name, display_data):
@@ -71,6 +66,8 @@ def main():
     df['tooltip_datetime'] = df.index.map(
         lambda x: x.strftime("%H:%M - %d.%m.%Y"))
 
+    df = df.dropna()
+
     print('Generating result')
 
     source = ColumnDataSource(df)
@@ -94,9 +91,12 @@ def main():
     alpha = 0.15
     minimum = 2
     target = 3.8
-    plot.add_layout(BoxAnnotation(top=minimum, fill_alpha=alpha, fill_color='red'))
-    plot.add_layout(BoxAnnotation(bottom=minimum, top=target, fill_alpha=alpha, fill_color='yellow'))
-    plot.add_layout(BoxAnnotation(bottom=target, fill_alpha=alpha, fill_color='green'))
+    plot.add_layout(BoxAnnotation(
+        top=minimum, fill_alpha=alpha, fill_color='red'))
+    plot.add_layout(BoxAnnotation(bottom=minimum, top=target,
+                                  fill_alpha=alpha, fill_color='yellow'))
+    plot.add_layout(BoxAnnotation(
+        bottom=target, fill_alpha=alpha, fill_color='green'))
 
     plot.add_tools(create_hover_tool("Download", "@download Mbit/s"))
     plot.add_tools(create_hover_tool("Upload", "@upload Mbit/s"))
