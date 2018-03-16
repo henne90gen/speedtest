@@ -9,12 +9,12 @@ print('Done with imports')
 
 def convert_time(time_string):
     pattern = "%Y-%m-%dT%H:%M:%S.%fZ"
-    time = datetime.strptime(time_string, pattern)
-    if time.minute < 30:
-        time = time.replace(minute=0)
-    elif time.minute <= 59:
-        time = time.replace(minute=30)
-    return time + timedelta(hours=1)
+    return datetime.strptime(time_string, pattern) + timedelta(hours=1)
+    # if time.minute < 30:
+    #     time = time.replace(minute=0)
+    # elif time.minute <= 59:
+    #     time = time.replace(minute=30)
+    # return time + 
 
 
 def create_hover_tool(name, display_data):
@@ -64,12 +64,9 @@ def main():
                      df.index.hour, df.index.minute, df.index.second]).mean()
     df.index = df.index.map(lambda x: datetime(*x))
 
-    print(df)
-
     # Upsample and interpolate data
     regular_intervall = df.resample('15T').asfreq()
     df = pd.concat([df, regular_intervall]).sort_index().interpolate()
-    print(df)
 
     df['tooltip_datetime'] = df.index.map(
         lambda x: x.strftime("%H:%M - %d.%m.%Y"))
